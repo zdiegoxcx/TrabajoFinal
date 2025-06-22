@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Inicio de sesión</title>
+</head>
+<body>
+
+  <h1>Iniciar Sesión</h1>
+  <form id="loginForm">
+    <label>Correo:<br />
+      <input type="email" id="correo" required />
+    </label><br /><br />
+    <label>Contraseña:<br />
+      <input type="password" id="contraseña" required />
+    </label><br /><br />
+    <button type="submit">Entrar</button>
+  </form>
+
+  <p id="mensaje"></p>
+
+  <p><a href="./register.html">Registrarse</a></p>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const mensaje = document.getElementById('mensaje');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const correo = document.getElementById('correo').value;
+      const password = document.getElementById('contraseña').value;
+
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ correo, password })
+      });
+
+      const text = await response.text();
+
+      if (response.ok) {
+        mensaje.style.color = 'green';
+        mensaje.textContent = text;
+      } else {
+        mensaje.style.color = 'red';
+        mensaje.textContent = text;
+      }
+    });
+  </script>
+</body>
+</html>

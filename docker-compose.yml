@@ -1,0 +1,20 @@
+# docker-compose.yml
+services:
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    # Opción 1: sin auth (por defecto Mongo arranca sin auth si no hay users)
+    # command: ["mongod"]
+
+    # Opción 2: explícito --noauth
+    command: ["mongod", "--noauth"]
+
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
+
+
+#aqui le copie tal cual al profe 

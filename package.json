@@ -1,0 +1,19 @@
+{
+  "name": "trabajofinal",
+  "version": "1.0.0",
+  "description": "Trabajo final tercer semestre",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zdiegoxcx/TrabajoFinal.git"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "mongoose": "^8.16.0",
+    "body-parser": "^1.20.2"
+  }
+}

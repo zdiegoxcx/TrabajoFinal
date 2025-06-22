@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registro de Usuario</title>
+</head>
+<body>
+  <h1>Registrar Usuario</h1>
+  <form id="registerForm">
+    <label>Nombre:<br />
+      <input type="text" id="nombre" required />
+    </label><br /><br />
+    <label>Apellido:<br />
+      <input type="text" id="apellido" required />
+    </label><br /><br />
+    <label>Correo:<br />
+      <input type="email" id="correo" required />
+    </label><br /><br />
+    <label>Contraseña:<br />
+      <input type="password" id="contraseña" required />
+    </label><br /><br />
+    <button type="submit">Registrar</button>
+  </form>
+
+  <p id="mensaje"></p>
+
+  <p><a href="./login.html">Ir al inicio de sesión</a></p>
+
+  <script>
+    const form = document.getElementById('registerForm');
+    const mensaje = document.getElementById('mensaje');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const nombre = document.getElementById('nombre').value;
+      const apellido = document.getElementById('apellido').value;
+      const correo = document.getElementById('correo').value;
+      const password = document.getElementById('contraseña').value;
+
+      const response = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre, apellido, correo, password })
+      });
+
+      const text = await response.text();
+
+      if (response.ok) {
+        mensaje.style.color = 'green';
+        mensaje.textContent = text;
+        form.reset();
+         setTimeout(() => {
+            window.location.href = './login.html'; // redirige al login
+         }, 1500); // espera 1.5 segundos
+      } else {
+        mensaje.style.color = 'red';
+        mensaje.textContent = text;
+      }
+    });
+  </script>
+</body>
+</html>
