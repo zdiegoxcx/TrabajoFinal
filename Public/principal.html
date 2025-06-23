@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Principal</title>
+</head>
+<body>
+  <!-- Mensaje de bienvenida personalizado -->
+  <h1 id="bienvenida">Bienvenido</h1>
+
+  <!-- Botón para cerrar sesión -->
+  <button id="cerrarSesion">Cerrar sesión</button>
+
+  <!-- Formulario para agregar tareas -->
+  <h2>Añadir Tarea</h2>
+  <form id="formTarea">
+    <input type="text" id="titulo" placeholder="Título" required />
+    <input type="text" id="descripcion" placeholder="Descripción" required />
+    <input type="date" id="fecha" required />
+    <button type="submit">Agregar</button>
+  </form>
+
+  <!-- Lista donde se muestran las tareas -->
+  <h2>Tus Tareas</h2>
+  <ul id="listaTareas"></ul>
+
+  <script>
+    // Obtener correo guardado en localStorage (usuario logueado)
+    const correo = localStorage.getItem('correoUsuario');
+    if (!correo) {
+      // Si no hay usuario logueado, redirige a login
+      window.location.href = './login.html';
+    }
+
+    // Elementos del DOM para manipular datos
+    const bienvenida = document.getElementById('bienvenida');
+    const listaTareas = document.getElementById('listaTareas');
+    const formTarea = document.getElementById('formTarea');
+
+    // Función para cargar datos del usuario y sus tareas desde backend
+    async function cargarDatos() {
+      const res = await fetch(`/usuario?correo=${correo}`);
+      const data = await res.json();
+
+      bienvenida.textContent = `Bienvenido ${data.nombre} ${data.apellido}`;
+      listaTareas.innerHTML = '';
+
+      // Por cada tarea crea un elemento <li> con la información y botones
+      data.tareas.forEach((tarea) => {
+        const item = document.createElement('li');
+        item.innerHTML = `
+          <strong>${tarea.fecha}</strong> - <strong>${tarea.titulo}</strong>: ${tarea.descripcion}
+          <br />
+          Estado: ${tarea.realizado ? '✅ Realizada' : '⏳ Pendiente'}
+          <br />
+          Destacada: ${tarea.destacado ? '⭐ Sí' : 'No'}
+          <br />
+          <button onclick="marcarRealizada(${tarea.id})">Marcar como realizada</button>
+          <button onclick="destacar(${tarea.id}, ${tarea.destacado})">
+            ${tarea.destacado ? 'Quitar destacado' : 'Destacar'}
+          </button>
+          <hr />
+        `;
+        listaTareas.appendChild(item);
+      });
+    }
+
+    // Marca una tarea como realizada (PUT al backend)
+    async function marcarRealizada(id) {
+      await fetch('/tarea/realizada', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ correo, id })
+      });
+      cargarDatos();
+    }
+
+    // Destaca o quita el destacado de una tarea
+    async function destacar(id, estadoActual) {
+      await fetch('/tarea/destacar', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ correo, id, destacado: !estadoActual })
+      });
+      cargarDatos();
+    }
+
+    // Evento submit para agregar nueva tarea (POST al backend)
+    formTarea.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const titulo = document.getElementById('titulo').value;
+      const descripcion = document.getElementById('descripcion').value;
+      const fecha = document.getElementById('fecha').value;
+
+      await fetch('/tarea', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ correo, titulo, descripcion, fecha })
+      });
+
+      formTarea.reset();
+      cargarDatos();
+    });
+
+    // Cerrar sesión: elimina correo de localStorage y redirige a login
+    document.getElementById('cerrarSesion').addEventListener('click', () => {
+      localStorage.removeItem('correoUsuario');
+      window.location.href = './login.html';
+    });
+
+    // Cargar datos al inicio
+    cargarDatos();
+  </script>
+
+</body>
+</html>

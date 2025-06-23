@@ -1,0 +1,136 @@
+/* Reset box model para todos los elementos */
+* {
+  box-sizing: border-box;
+}
+
+/* Estilos generales de body centrado y fondo */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f0f2f5;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 20px;
+}
+
+/* Contenedor principal: fondo blanco, sombra y layout flex */
+.container {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  display: flex;
+  overflow: hidden;
+  max-width: 1000px;
+  width: 100%;
+  flex-wrap: wrap; /* Para que se adapte en pantallas pequeñas */
+}
+
+/* Sección del formulario */
+.form-section {
+  flex: 1;
+  padding: 40px;
+  min-width: 300px; /* No se achique más */
+}
+
+/* Títulos y etiquetas del formulario */
+.form-section h1 {
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+.form-section label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+/* Inputs del formulario con tamaño completo y espaciado */
+.form-section input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+/* Botón principal azul */
+.form-section button {
+  width: 100%;
+  padding: 12px;
+  background-color: #3498db;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.form-section button:hover {
+  background-color: #2980b9;
+}
+
+/* Mensaje de estado (error o éxito) */
+#mensaje {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+/* Link en texto */
+.form-section p a {
+  text-decoration: none;
+  color: #3498db;
+}
+
+/* Sección del video */
+.video-section {
+  flex: 1;
+  background-color: #ecf0f1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 300px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+/* Estilo responsivo para el iframe del video */
+.video-responsive {
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* Relación 16:9 */
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+.video-responsive iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Media query para pantallas pequeñas */
+/* Pone el video al final (debajo del formulario) */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  /* Mover el video abajo */
+  .video-section {
+    order: 1;
+  }
+}
+
+.recuperar-pass {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+}

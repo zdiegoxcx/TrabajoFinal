@@ -61,6 +61,87 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// Obtener usuario por correo
+app.get('/usuario', async (req, res) => {
+  const { correo } = req.query;
+  try {
+    const usuario = await Usuario.findOne({ correo });
+    if (!usuario) return res.status(404).send('No encontrado');
+    res.json(usuario);
+  } catch (error) {
+    res.status(500).send('Error interno');
+  }
+});
+
+// Añadir tarea
+app.post('/tarea', async (req, res) => {
+  const { correo, titulo, descripcion, fecha } = req.body;
+
+  try {
+    const usuario = await Usuario.findOne({ correo });
+    if (!usuario) return res.status(404).send('Usuario no encontrado');
+
+    const nuevaTarea = {
+      id: usuario.tareas.length + 1,
+      fecha,
+      titulo,
+      descripcion,
+      realizado: false,
+      destacado: false
+    };
+
+    usuario.tareas.push(nuevaTarea);
+    await usuario.save();
+
+    res.status(201).send('Tarea añadida');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al agregar tarea');
+  }
+});
+
+
+// Marcar tarea como realizada
+app.put('/tarea/realizada', async (req, res) => {
+  const { correo, id } = req.body;
+
+  try {
+    const usuario = await Usuario.findOne({ correo });
+    if (!usuario) return res.status(404).send('Usuario no encontrado');
+
+    const tarea = usuario.tareas.find(t => t.id === id);
+    if (!tarea) return res.status(404).send('Tarea no encontrada');
+
+    tarea.realizado = true;
+    await usuario.save();
+    res.send('Tarea marcada como realizada');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al actualizar tarea');
+  }
+});
+
+// Destacar tarea
+app.put('/tarea/destacar', async (req, res) => {
+  const { correo, id, destacado } = req.body;
+
+  try {
+    const usuario = await Usuario.findOne({ correo });
+    if (!usuario) return res.status(404).send('Usuario no encontrado');
+
+    const tarea = usuario.tareas.find(t => t.id === id);
+    if (!tarea) return res.status(404).send('Tarea no encontrada');
+
+    tarea.destacado = destacado;
+    await usuario.save();
+    res.send(`Tarea ${destacado ? 'destacada' : 'desmarcada como destacada'}`);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al cambiar destacado');
+  }
+});
+
+
 // Iniciar servidor
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);

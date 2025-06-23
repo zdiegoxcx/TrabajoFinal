@@ -3,61 +3,102 @@
 <head>
   <meta charset="UTF-8" />
   <title>Registro de Usuario</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Enlace al archivo CSS para estilos -->
+  <link rel="stylesheet" href="estilos_usuario.css" />
 </head>
 <body>
-  <h1>Registrar Usuario</h1>
-  <form id="registerForm">
-    <label>Nombre:<br />
-      <input type="text" id="nombre" required />
-    </label><br /><br />
-    <label>Apellido:<br />
-      <input type="text" id="apellido" required />
-    </label><br /><br />
-    <label>Correo:<br />
-      <input type="email" id="correo" required />
-    </label><br /><br />
-    <label>Contraseña:<br />
-      <input type="password" id="contraseña" required />
-    </label><br /><br />
-    <button type="submit">Registrar</button>
-  </form>
 
-  <p id="mensaje"></p>
+  <div class="container">
+    <!-- Sección que contiene el formulario de registro -->
+    <div class="form-section">
+      <h1>Registrar Usuario</h1>
 
-  <p><a href="./login.html">Ir al inicio de sesión</a></p>
+      <!-- Formulario con campos para ingresar datos de usuario -->
+      <form id="registerForm">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" required />
+
+        <label for="apellido">Apellido:</label>
+        <input type="text" id="apellido" required />
+
+        <label for="correo">Correo:</label>
+        <input type="email" id="correo" required />
+
+        <label for="contraseña">Contraseña:</label>
+        <input type="password" id="contraseña" required />
+
+        <!-- Botón para enviar el formulario -->
+        <button type="submit">Registrar</button>
+      </form>
+
+      <!-- Aquí se mostrará el mensaje de éxito o error luego de enviar el formulario -->
+      <p id="mensaje"></p>
+
+      <!-- Enlace para volver a la página de inicio de sesión -->
+      <p><a href="./login.html">Ir al inicio de sesión</a></p>
+
+      <!-- Opcional: Aquí se podría agregar mensaje para recuperación de contraseña -->
+    </div>
+
+     <!-- Sección del video embebido de YouTube -->
+    <div class="video-section">
+      <iframe 
+      width="560" 
+      height="315"
+      src="https://www.youtube.com/embed/KClnQgyPacU" 
+      title="Persona 4 (PlayStation 2) | Opening Movie | Persona 25th" 
+      frameborder="0" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+    </iframe>
+    </div>
+  </div>
 
   <script>
+    // Obtener referencia al formulario y al párrafo donde se mostrará mensaje
     const form = document.getElementById('registerForm');
     const mensaje = document.getElementById('mensaje');
 
+    // Evento que se ejecuta al enviar el formulario
     form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+      e.preventDefault(); // Prevenir recarga de página
 
+      // Obtener valores ingresados en los inputs
       const nombre = document.getElementById('nombre').value;
       const apellido = document.getElementById('apellido').value;
       const correo = document.getElementById('correo').value;
       const password = document.getElementById('contraseña').value;
 
+      // Enviar datos al servidor usando fetch (método POST)
       const response = await fetch('/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombre, apellido, correo, password })
       });
 
+      // Obtener el texto de respuesta del servidor (mensaje)
       const text = await response.text();
 
       if (response.ok) {
+        // Si el registro fue exitoso, mostrar mensaje en verde
         mensaje.style.color = 'green';
         mensaje.textContent = text;
+
+        // Limpiar formulario
         form.reset();
-         setTimeout(() => {
-            window.location.href = './login.html'; // redirige al login
-         }, 1500); // espera 1.5 segundos
+
+        // Redirigir al login después de 1.5 segundos
+        setTimeout(() => {
+          window.location.href = './login.html';
+        }, 1500);
       } else {
+        // Si hubo error, mostrar mensaje en rojo
         mensaje.style.color = 'red';
         mensaje.textContent = text;
       }
     });
   </script>
+
 </body>
 </html>
+

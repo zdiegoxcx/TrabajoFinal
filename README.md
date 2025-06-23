@@ -4,15 +4,17 @@
 ```
 TrabajoFinal/
 │
-├── node_modules          # Carpeta de mierda, se supone que la deberia eliminar pero luego no funciona nadaaa
-├── index.js              # Lógica principal del servidor
-├── Usuario.js            # Modelo Mongoose (hata el momento solo inicio de sesion)
-├── package.json          # dependencias y scripts
+├── node_modules             # Carpeta de mierda, se supone que la deberia eliminar pero luego no funciona nadaaa
+├── index.js                 # Lógica principal del servidor
+├── Usuario.js               # Modelo Mongoose (hata el momento solo inicio de sesion)
+├── package.json             # dependencias y scripts
 ├── Public/
-│ ├── login.html          # la pagina para logearse
-│ └── register.html       # la pagina para registrarse
-├──docker-compose.yml     # Base de datos MongoDB
-└──.gitignore             # Me lo dio automaticamente HitHub segun node.js 
+│ ├── login.html             # la pagina para logearse
+│ ├──estilos_usuarios.css    # Diseño de inicio de sesion y registro
+│ ├──principal.html          # La paguina en teoria principal
+│ └── register.html          # la pagina para registrarse
+├──docker-compose.yml        # Base de datos MongoDB
+└──.gitignore                # Me lo dio automaticamente HitHub segun node.js 
 ```
 
 ## 🗂️ Notas de Organización
