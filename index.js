@@ -141,6 +141,27 @@ app.put('/tarea/destacar', async (req, res) => {
   }
 });
 
+// Eliminar tarea
+app.delete('/tarea', async (req, res) => {
+  const { correo, id } = req.body;
+
+  try {
+    const usuario = await Usuario.findOne({ correo });
+    if (!usuario) return res.status(404).send('Usuario no encontrado');
+
+    const indice = usuario.tareas.findIndex(t => t.id === id);
+    if (indice === -1) return res.status(404).send('Tarea no encontrada');
+
+    usuario.tareas.splice(indice, 1);
+    await usuario.save();
+
+    res.send('Tarea eliminada');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al eliminar tarea');
+  }
+});
+
 
 // Iniciar servidor
 app.listen(PORT, () => {

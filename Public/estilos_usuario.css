@@ -10,10 +10,26 @@ body {
   background-color: #f0f2f5;
   color: #333;
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* ⬅️ Esta línea es la clave */
   align-items: center;
-  height: 100vh;
+  justify-content: center;
+  min-height: 90vh;
   padding: 20px;
+}
+
+.titulo-principal {
+  text-align: center;
+  font-size: 48px;
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+
+.titulo-principal .negro {
+  color: #000;
+}
+
+.titulo-principal .rojo {
+  color: #fe6b6b; 
 }
 
 /* Contenedor principal: fondo blanco, sombra y layout flex */

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Principal</title>
+  <link rel="stylesheet" href="estilos_principal.css">
 </head>
 <body>
   <!-- Mensaje de bienvenida personalizado -->
@@ -59,6 +60,7 @@
           <button onclick="destacar(${tarea.id}, ${tarea.destacado})">
             ${tarea.destacado ? 'Quitar destacado' : 'Destacar'}
           </button>
+          <button onclick="eliminarTarea(${tarea.id})">Eliminar</button>
           <hr />
         `;
         listaTareas.appendChild(item);
@@ -102,6 +104,14 @@
       formTarea.reset();
       cargarDatos();
     });
+    async function eliminarTarea(id) {
+      await fetch('/tarea', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ correo, id })
+      });
+      cargarDatos();
+    }
 
     // Cerrar sesión: elimina correo de localStorage y redirige a login
     document.getElementById('cerrarSesion').addEventListener('click', () => {
