@@ -1,0 +1,228 @@
+/* Fuente base */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4effc;
+  color: #333;
+}
+
+/* Encabezado */
+.encabezado {
+  background: linear-gradient(to right, #ff6b6b, #ffa56b);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-bottom: 5px solid #fff;
+}
+
+.encabezado h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.pomo {
+  color: black;
+}
+
+.task {
+  color: #f08;
+  font-weight: bold;
+}
+
+#cerrarSesion {
+  background-color: #f0f0f0;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#cerrarSesion:hover {
+  background-color: #ddd;
+}
+
+/* Contenido principal */
+.contenido {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding: 2rem;
+  flex-wrap: wrap;
+}
+
+/* Formulario */
+.formulario {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  max-width: 500px;
+  margin-bottom: 2rem;
+}
+
+.formulario h2 {
+  margin-top: 0;
+}
+
+.formulario input,
+.formulario textarea,
+.formulario button {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #e8e4ea;
+}
+
+.formulario button {
+  background-color: #c48af9;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.formulario button:hover {
+  background-color: #a06fd1;
+}
+
+/* Pomodoro */
+#pomodoro {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 220px;
+}
+
+#pomodoro h3 {
+  margin: 0;
+}
+
+#tiempo {
+  font-size: 2.5rem;
+  margin: 1rem 0;
+  background-color: #e0dfe4;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  display: inline-block;
+  border: 2px solid #99a;
+}
+
+#comenzar {
+  background-color: #ff623d;
+  border: none;
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#comenzar:hover {
+  background-color: #d64d2b;
+}
+
+/* Sección de tareas */
+.tareas {
+  background-color: #ffffff;
+  margin: 0 auto;
+  max-width: 90%;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.tareas h2 {
+  text-align: center;
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  border-bottom: 3px solid black;
+  padding-bottom: 0.5rem;
+}
+
+#listaTareas {
+  list-style: none;
+  padding: 0;
+}
+
+#listaTareas li {
+  background-color: #e6e1e9;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+#listaTareas li strong {
+  font-weight: bold;
+}
+
+#listaTareas button {
+  margin-top: 0.5rem;
+  margin-right: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #ccc;
+  transition: background-color 0.2s;
+}
+
+#listaTareas button:hover {
+  background-color: #bbb;
+}
+
+#listaTareas button:nth-of-type(1) {
+  background-color: #4caf50;
+  color: white;
+}
+
+#listaTareas button:nth-of-type(1):hover {
+  background-color: #388e3c;
+}
+
+#listaTareas button:nth-of-type(2) {
+  background-color: #ffc107;
+  color: black;
+}
+
+#listaTareas button:nth-of-type(2):hover {
+  background-color: #e0a800;
+}
+
+#listaTareas button:nth-of-type(3) {
+  background-color: #f44336;
+  color: white;
+}
+
+#listaTareas button:nth-of-type(3):hover {
+  background-color: #d32f2f;
+}
+
+#listaTareas li[draggable="true"] {
+  cursor: grab;
+}
+
+#listaTareas li[draggable="true"].dragging {
+  cursor: grabbing;
+  opacity: 0.6;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  transform: scale(1.03);
+  transition: transform 0.2s ease;
+}
+
+#listaTareas li.drag-over {
+  border-top: 3px solid #ff623d; /* línea superior visible */
+}
+
+

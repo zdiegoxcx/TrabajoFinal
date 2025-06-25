@@ -2,43 +2,49 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Principal</title>
-  <link rel="stylesheet" href="estilos_principal.css">
+  <title>POMOTASK</title>
+  <link rel="stylesheet" href="estilos_principal.css" />
 </head>
 <body>
-  <!-- Mensaje de bienvenida personalizado -->
-  <h1 id="bienvenida">Bienvenido</h1>
+  <header class="encabezado">
+    <h1><span class="pomo">POMO</span><span class="task">TASK</span></h1>
+    <div id="bienvenida">Bienvenido</div>
+    <button id="cerrarSesion">Salir</button>
+  </header>
 
-  <!-- Botón para cerrar sesión -->
-  <button id="cerrarSesion">Cerrar sesión</button>
+  <main class="contenido">
+    <section class="formulario">
+      <h2>Añadir tarea:</h2>
+      <form id="formTarea">
+        <input type="text" id="titulo" placeholder="Título" required />
+        <input type="date" id="fecha" required />
+        <textarea id="descripcion" placeholder="Descripción" required></textarea>
+        <button type="submit">Guardar</button>
+      </form>
+    </section>
 
-  <!-- Formulario para agregar tareas -->
-  <h2>Añadir Tarea</h2>
-  <form id="formTarea">
-    <input type="text" id="titulo" placeholder="Título" required />
-    <input type="text" id="descripcion" placeholder="Descripción" required />
-    <input type="date" id="fecha" required />
-    <button type="submit">Agregar</button>
-  </form>
+    <section id="pomodoro">
+      <h3>Pomodoro</h3>
+      <div class="tiempo" id="tiempo">25:00</div>
+      <button id="comenzar">Comenzar</button>
+    </section>
+  </main>
 
-  <!-- Lista donde se muestran las tareas -->
-  <h2>Tus Tareas</h2>
-  <ul id="listaTareas"></ul>
+  <section class="tareas">
+    <h2>Tareas</h2>
+    <ul id="listaTareas"></ul>
+  </section>
 
   <script>
-    // Obtener correo guardado en localStorage (usuario logueado)
     const correo = localStorage.getItem('correoUsuario');
     if (!correo) {
-      // Si no hay usuario logueado, redirige a login
-      window.location.href = './login.html';
+      window.location.href = './index.html';
     }
-
-    // Elementos del DOM para manipular datos
+ 
     const bienvenida = document.getElementById('bienvenida');
     const listaTareas = document.getElementById('listaTareas');
     const formTarea = document.getElementById('formTarea');
 
-    // Función para cargar datos del usuario y sus tareas desde backend
     async function cargarDatos() {
       const res = await fetch(`/usuario?correo=${correo}`);
       const data = await res.json();
@@ -46,28 +52,109 @@
       bienvenida.textContent = `Bienvenido ${data.nombre} ${data.apellido}`;
       listaTareas.innerHTML = '';
 
-      // Por cada tarea crea un elemento <li> con la información y botones
       data.tareas.forEach((tarea) => {
         const item = document.createElement('li');
-        item.innerHTML = `
-          <strong>${tarea.fecha}</strong> - <strong>${tarea.titulo}</strong>: ${tarea.descripcion}
+        item.setAttribute('draggable', 'true'); // para drag and drop
+        item.dataset.id = tarea.id; // para identificar tarea al soltar
+
+        const hoy = new Date();
+        const fechaTarea = new Date(tarea.fecha);
+        const vencida = fechaTarea < hoy && !tarea.realizado;
+
+        let contenidoHTML = `
+          <strong style="color: ${vencida ? 'red' : 'inherit'}">${tarea.fecha}</strong> 
+          - <strong>${tarea.titulo}</strong>: ${tarea.descripcion}
           <br />
-          Estado: ${tarea.realizado ? '✅ Realizada' : '⏳ Pendiente'}
+          Estado: ${tarea.realizado ? '✅ Realizada' : vencida ? '🛑 Tarea vencida' :'⏳ Pendiente'}
           <br />
           Destacada: ${tarea.destacado ? '⭐ Sí' : 'No'}
           <br />
-          <button onclick="marcarRealizada(${tarea.id})">Marcar como realizada</button>
-          <button onclick="destacar(${tarea.id}, ${tarea.destacado})">
-            ${tarea.destacado ? 'Quitar destacado' : 'Destacar'}
-          </button>
-          <button onclick="eliminarTarea(${tarea.id})">Eliminar</button>
-          <hr />
         `;
+
+        if (!vencida) {
+          contenidoHTML += `
+            <button class="btn-realizar">Marcar como realizada</button>
+            <button class="btn-destacar">
+              ${tarea.destacado ? 'Quitar destacado' : 'Destacar'}
+            </button>
+            <button class="btn-eliminar">Eliminar</button>
+          `;
+        } else {
+          // Solo botón eliminar rojo para tareas vencidas
+          contenidoHTML += `
+            <button class="btn-eliminar">Eliminar</button>
+          `;
+        }
+
+        contenidoHTML += `<hr />`;
+
+        item.innerHTML = contenidoHTML;
         listaTareas.appendChild(item);
+
+        // Eventos botones
+        if (!vencida) {
+          item.querySelector('.btn-realizar')
+              .addEventListener('click', () => marcarRealizada(tarea.id));
+
+          item.querySelector('.btn-destacar')
+              .addEventListener('click', () => destacar(tarea.id, tarea.destacado));
+        }
+
+        item.querySelector('.btn-eliminar')
+            .addEventListener('click', () => eliminarTarea(tarea.id));
+
+        // Drag and Drop events
+        item.addEventListener('dragstart', dragStart);
+        item.addEventListener('dragover', dragOver);
+        item.addEventListener('dragleave', dragLeave);
+        item.addEventListener('drop', drop);
+        item.addEventListener('dragend', dragEnd);
       });
     }
 
-    // Marca una tarea como realizada (PUT al backend)
+    // Variables globales para drag & drop
+    let draggedItem = null;
+
+    function dragStart(e) {
+      draggedItem = this;
+      e.dataTransfer.effectAllowed = "move";
+      this.classList.add('dragging');
+    }
+
+    function dragOver(e) {
+      e.preventDefault(); // necesario para permitir drop
+      e.dataTransfer.dropEffect = "move";
+
+      if (this !== draggedItem) {
+        this.classList.add('drag-over');
+      }
+    }
+
+    function dragLeave(e) {
+      this.classList.remove('drag-over');
+    }
+
+    function drop(e) {
+      e.preventDefault();
+      if (draggedItem !== this) {
+        const parent = this.parentNode;
+        const draggedIndex = Array.from(parent.children).indexOf(draggedItem);
+        const targetIndex = Array.from(parent.children).indexOf(this);
+
+        if (draggedIndex < targetIndex) {
+          parent.insertBefore(draggedItem, this.nextSibling);
+        } else {
+          parent.insertBefore(draggedItem, this);
+        }
+      }
+      this.classList.remove('drag-over');
+    }
+
+    function dragEnd(e) {
+      this.classList.remove('dragging');
+      document.querySelectorAll('#listaTareas li.drag-over').forEach(el => el.classList.remove('drag-over'));
+    }
+
     async function marcarRealizada(id) {
       await fetch('/tarea/realizada', {
         method: 'PUT',
@@ -76,8 +163,7 @@
       });
       cargarDatos();
     }
-
-    // Destaca o quita el destacado de una tarea
+ 
     async function destacar(id, estadoActual) {
       await fetch('/tarea/destacar', {
         method: 'PUT',
@@ -87,10 +173,17 @@
       cargarDatos();
     }
 
-    // Evento submit para agregar nueva tarea (POST al backend)
+    async function eliminarTarea(id) {
+      await fetch('/tarea', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ correo, id })
+      });
+      cargarDatos();
+    }
+
     formTarea.addEventListener('submit', async (e) => {
       e.preventDefault();
-
       const titulo = document.getElementById('titulo').value;
       const descripcion = document.getElementById('descripcion').value;
       const fecha = document.getElementById('fecha').value;
@@ -104,24 +197,45 @@
       formTarea.reset();
       cargarDatos();
     });
-    async function eliminarTarea(id) {
-      await fetch('/tarea', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ correo, id })
-      });
-      cargarDatos();
-    }
 
-    // Cerrar sesión: elimina correo de localStorage y redirige a login
     document.getElementById('cerrarSesion').addEventListener('click', () => {
       localStorage.removeItem('correoUsuario');
-      window.location.href = './login.html';
+      window.location.href = './index.html';
     });
 
-    // Cargar datos al inicio
+    // Pomodoro
+    let minutos = 25;
+    let segundos = 0;
+    let intervalo;
+    const tiempo = document.getElementById('tiempo');
+    const btnComenzar = document.getElementById('comenzar');
+
+    btnComenzar.addEventListener('click', () => {
+      clearInterval(intervalo);
+      minutos = 25;
+      segundos = 0;
+      actualizarTiempo();
+      intervalo = setInterval(() => {
+        if (segundos === 0) {
+          if (minutos === 0) {
+            clearInterval(intervalo);
+            alert("⏰ ¡Pomodoro terminado!");
+          } else {
+            minutos--;
+            segundos = 59;
+          }
+        } else {
+          segundos--;
+        }
+        actualizarTiempo();
+      }, 1000);
+    });
+
+    function actualizarTiempo() {
+      tiempo.textContent = `${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+    }
+
     cargarDatos();
   </script>
-
 </body>
 </html>
