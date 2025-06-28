@@ -222,7 +222,22 @@ body {
 }
 
 #listaTareas li.drag-over {
-  border-top: 3px solid #ff623d; /* línea superior visible */
+  border-top: 3px solid #ff623d;
 }
 
+#saltar {
+  background-color: #3c91e6;
+  border: none;
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 0.5rem;
+}
+
+#saltar:hover {
+  background-color: #2a6fb0;
+}
 
