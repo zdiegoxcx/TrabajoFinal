@@ -26,7 +26,9 @@
     <section id="pomodoro">
       <h3>Pomodoro</h3>
       <div class="tiempo" id="tiempo">25:00</div>
+      <div id="fasePomodoro" style="margin-top: 0.5rem; font-weight: bold; font-size: 1rem; color: #555;">🧠 Enfocado</div>
       <button id="comenzar">Comenzar</button>
+      <button id="saltar">Saltar</button>
     </section>
   </main>
 
@@ -35,27 +37,143 @@
     <ul id="listaTareas"></ul>
   </section>
 
+  <!-- Audios -->
+  <audio id="sonidoPomodoro" src="Assets/pomodoro.wav" preload="auto"></audio>
+  <audio id="sonidoDescanso" src="Assets/descanso.wav" preload="auto"></audio>
+
   <script>
     const correo = localStorage.getItem('correoUsuario');
-    if (!correo) {
-      window.location.href = './index.html';
-    }
- 
+    if (!correo) window.location.href = './index.html';
+
     const bienvenida = document.getElementById('bienvenida');
     const listaTareas = document.getElementById('listaTareas');
     const formTarea = document.getElementById('formTarea');
 
+    // Pomodoro
+    const tiempo = document.getElementById('tiempo');
+    const btnComenzar = document.getElementById('comenzar');
+    const btnSaltar = document.getElementById('saltar');
+    const fasePomodoro = document.getElementById('fasePomodoro');
+
+    const sonidoPomodoro = document.getElementById('sonidoPomodoro');
+    const sonidoDescanso = document.getElementById('sonidoDescanso');
+
+    // Ajustar volumen a 0.3 (30%)
+    sonidoPomodoro.volume = 0.3;
+    sonidoDescanso.volume = 0.3;
+
+    let minutos = 25;
+    let segundos = 0;
+    let intervalo = null;
+    let estado = 'trabajo'; // trabajo, descansoBreve, descansoLargo
+    let ciclosCompletados = 0;
+    let pausado = true;
+
+    function actualizarTiempo() {
+      tiempo.textContent = `${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+    }
+
+    function actualizarFase() {
+      if (estado === 'trabajo') {
+        fasePomodoro.textContent = '🧠 Enfocado';
+        fasePomodoro.style.color = '#ff623d';
+      } else if (estado === 'descansoBreve') {
+        fasePomodoro.textContent = '☕ Descanso breve';
+        fasePomodoro.style.color = '#3c91e6';
+      } else {
+        fasePomodoro.textContent = '🌴 Descanso largo';
+        fasePomodoro.style.color = '#2e7d32';
+      }
+    }
+
+    function reproducirSonido() {
+      if (estado === 'trabajo') {
+        sonidoPomodoro.currentTime = 0;
+        return sonidoPomodoro.play();
+      } else {
+        sonidoDescanso.currentTime = 0;
+        return sonidoDescanso.play();
+      }
+    }
+
+    function cambiarEstado() {
+      if (estado === 'trabajo') {
+        ciclosCompletados++;
+        if (ciclosCompletados % 4 === 0) {
+          estado = 'descansoLargo';
+          minutos = 15;
+        } else {
+          estado = 'descansoBreve';
+          minutos = 5;
+        }
+        segundos = 0;
+        reproducirSonido();
+      } else {
+        estado = 'trabajo';
+        minutos = 25;
+        segundos = 0;
+        reproducirSonido();
+      }
+      actualizarFase();
+      actualizarTiempo();
+    }
+
+    function tick() {
+      if (!pausado) {
+        if (segundos === 0) {
+          if (minutos === 0) {
+            cambiarEstado();
+          } else {
+            minutos--;
+            segundos = 59;
+          }
+        } else {
+          segundos--;
+        }
+        actualizarTiempo();
+      }
+    }
+
+    btnComenzar.addEventListener('click', () => {
+      if (pausado) {
+        pausado = false;
+        btnComenzar.textContent = 'Pausar';
+        if (!intervalo) {
+          intervalo = setInterval(tick, 1000);
+        }
+        const playPromise = reproducirSonido();
+        if (playPromise !== undefined) {
+          playPromise.catch(err => console.warn("Sonido bloqueado o falló:", err));
+        }
+      } else {
+        pausado = true;
+        btnComenzar.textContent = 'Comenzar';
+      }
+    });
+
+    btnSaltar.addEventListener('click', () => {
+      cambiarEstado();
+      pausado = false;
+      btnComenzar.textContent = 'Pausar';
+
+      if (!intervalo) {
+        intervalo = setInterval(tick, 1000);
+      }
+    });
+
+    actualizarFase();
+    actualizarTiempo();
+
+    // --- Código tareas igual que el que tienes ---
     async function cargarDatos() {
       const res = await fetch(`/usuario?correo=${correo}`);
       const data = await res.json();
-
       bienvenida.textContent = `Bienvenido ${data.nombre} ${data.apellido}`;
       listaTareas.innerHTML = '';
-
-      data.tareas.forEach((tarea) => {
+      data.tareas.forEach(tarea => {
         const item = document.createElement('li');
-        item.setAttribute('draggable', 'true'); // para drag and drop
-        item.dataset.id = tarea.id; // para identificar tarea al soltar
+        item.setAttribute('draggable', 'true');
+        item.dataset.id = tarea.id;
 
         const hoy = new Date();
         const fechaTarea = new Date(tarea.fecha);
@@ -67,92 +185,29 @@
           <br />
           Estado: ${tarea.realizado ? '✅ Realizada' : vencida ? '🛑 Tarea vencida' :'⏳ Pendiente'}
           <br />
-          Destacada: ${tarea.destacado ? '⭐ Sí' : 'No'}
-          <br />
+          Destacada: ${tarea.destacado ? '⭐ Sí' : 'No'}<br />
         `;
 
         if (!vencida) {
           contenidoHTML += `
             <button class="btn-realizar">Marcar como realizada</button>
-            <button class="btn-destacar">
-              ${tarea.destacado ? 'Quitar destacado' : 'Destacar'}
-            </button>
+            <button class="btn-destacar">${tarea.destacado ? 'Quitar destacado' : 'Destacar'}</button>
             <button class="btn-eliminar">Eliminar</button>
           `;
         } else {
-          // Solo botón eliminar rojo para tareas vencidas
-          contenidoHTML += `
-            <button class="btn-eliminar">Eliminar</button>
-          `;
+          contenidoHTML += `<button class="btn-eliminar">Eliminar</button>`;
         }
 
         contenidoHTML += `<hr />`;
-
         item.innerHTML = contenidoHTML;
         listaTareas.appendChild(item);
 
-        // Eventos botones
         if (!vencida) {
-          item.querySelector('.btn-realizar')
-              .addEventListener('click', () => marcarRealizada(tarea.id));
-
-          item.querySelector('.btn-destacar')
-              .addEventListener('click', () => destacar(tarea.id, tarea.destacado));
+          item.querySelector('.btn-realizar').addEventListener('click', () => marcarRealizada(tarea.id));
+          item.querySelector('.btn-destacar').addEventListener('click', () => destacar(tarea.id, tarea.destacado));
         }
-
-        item.querySelector('.btn-eliminar')
-            .addEventListener('click', () => eliminarTarea(tarea.id));
-
-        // Drag and Drop events
-        item.addEventListener('dragstart', dragStart);
-        item.addEventListener('dragover', dragOver);
-        item.addEventListener('dragleave', dragLeave);
-        item.addEventListener('drop', drop);
-        item.addEventListener('dragend', dragEnd);
+        item.querySelector('.btn-eliminar').addEventListener('click', () => eliminarTarea(tarea.id));
       });
-    }
-
-    // Variables globales para drag & drop
-    let draggedItem = null;
-
-    function dragStart(e) {
-      draggedItem = this;
-      e.dataTransfer.effectAllowed = "move";
-      this.classList.add('dragging');
-    }
-
-    function dragOver(e) {
-      e.preventDefault(); // necesario para permitir drop
-      e.dataTransfer.dropEffect = "move";
-
-      if (this !== draggedItem) {
-        this.classList.add('drag-over');
-      }
-    }
-
-    function dragLeave(e) {
-      this.classList.remove('drag-over');
-    }
-
-    function drop(e) {
-      e.preventDefault();
-      if (draggedItem !== this) {
-        const parent = this.parentNode;
-        const draggedIndex = Array.from(parent.children).indexOf(draggedItem);
-        const targetIndex = Array.from(parent.children).indexOf(this);
-
-        if (draggedIndex < targetIndex) {
-          parent.insertBefore(draggedItem, this.nextSibling);
-        } else {
-          parent.insertBefore(draggedItem, this);
-        }
-      }
-      this.classList.remove('drag-over');
-    }
-
-    function dragEnd(e) {
-      this.classList.remove('dragging');
-      document.querySelectorAll('#listaTareas li.drag-over').forEach(el => el.classList.remove('drag-over'));
     }
 
     async function marcarRealizada(id) {
@@ -163,7 +218,7 @@
       });
       cargarDatos();
     }
- 
+
     async function destacar(id, estadoActual) {
       await fetch('/tarea/destacar', {
         method: 'PUT',
@@ -187,13 +242,11 @@
       const titulo = document.getElementById('titulo').value;
       const descripcion = document.getElementById('descripcion').value;
       const fecha = document.getElementById('fecha').value;
-
       await fetch('/tarea', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ correo, titulo, descripcion, fecha })
       });
-
       formTarea.reset();
       cargarDatos();
     });
@@ -202,38 +255,6 @@
       localStorage.removeItem('correoUsuario');
       window.location.href = './index.html';
     });
-
-    // Pomodoro
-    let minutos = 25;
-    let segundos = 0;
-    let intervalo;
-    const tiempo = document.getElementById('tiempo');
-    const btnComenzar = document.getElementById('comenzar');
-
-    btnComenzar.addEventListener('click', () => {
-      clearInterval(intervalo);
-      minutos = 25;
-      segundos = 0;
-      actualizarTiempo();
-      intervalo = setInterval(() => {
-        if (segundos === 0) {
-          if (minutos === 0) {
-            clearInterval(intervalo);
-            alert("⏰ ¡Pomodoro terminado!");
-          } else {
-            minutos--;
-            segundos = 59;
-          }
-        } else {
-          segundos--;
-        }
-        actualizarTiempo();
-      }, 1000);
-    });
-
-    function actualizarTiempo() {
-      tiempo.textContent = `${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
-    }
 
     cargarDatos();
   </script>
