@@ -14,7 +14,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/usuarios', {
 //aqui deberia ir un console.log, pero el varela dijo que eran mala practica
 
 // Middleware (para el jason)
-app.use(express.static(path.join(__dirname, 'Public')));
+app.use(express.static(path.join(__dirname, 'docs')));
 app.use(express.json());
 
 // Registro de usuario
