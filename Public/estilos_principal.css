@@ -1,8 +1,23 @@
 /* ----------- Estilo base ----------- */
 body {
+  position: relative; /* Importante para posicionar .fondo-wave */
   margin: 0;
   font-family: 'Inter', sans-serif;
   background-color: #efe6f9;
+}
+
+/* Fondo de olas */
+.fondo-wave {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 500px; 
+  background-image: url('Assets/Images/wave.svg'); 
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top center;
+  z-index: -1;
 }
 
 /* ----------- Encabezado superior (más destacado) ----------- */
@@ -458,5 +473,19 @@ body {
     padding: 1.25rem;
   }
 }
+/* ----------- Footer ----------- */
+.footer {
+  background-color: #2b2b2b; /* Gris oscuro */
+  color: #ffffff;
+  text-align: center;
+  padding: 0.4rem 1rem;
+  font-size: 0.8rem;
+  margin-top: 2rem;
+  box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.05);
+}
 
+.footer-contenido {
+  max-width: 1000px;
+  margin: auto;
+}
 
