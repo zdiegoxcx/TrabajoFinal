@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <title>POMOTASK</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="estilos_principal.css" />
+  
 </head>
 <body>
   <div class="fondo-wave"></div>
@@ -165,23 +167,36 @@
     // Verificamos si la tarea está vencida (fecha es anterior a hoy y no está realizada)
     const vencida = fechaTarea < hoy && !tarea.realizado;
 
-    let contenidoHTML = `
-      <strong style="color: ${vencida ? 'red' : 'inherit'}">${tarea.fecha}</strong> 
-      - <strong>${tarea.titulo}</strong>: ${tarea.descripcion}
-      <br />
-      Estado: ${tarea.realizado ? '✅ Realizada' : vencida ? '🛑 Tarea vencida' : '⏳ Pendiente'}
-      <br />
-      Destacada: ${tarea.destacado ? '⭐ Sí' : 'No'}<br />
+      let contenidoHTML = `
+        <div class="tarea-header">
+          <div class="tarea-titulo">${tarea.titulo}</div>
+          <div class="tarea-fecha" style="color: ${vencida ? '#e53935' : '#fe6b6b'}">${tarea.fecha}</div>
+        </div>
+      <div class="tarea-descripcion">${tarea.descripcion}</div>
+      <div class="tarea-info">
+        <div class="tarea-estado ${
+          tarea.realizado ? 'realizada' : vencida ? 'vencida' : 'pendiente'
+        }">
+          ${tarea.realizado ? '✅ Realizada' : vencida ? '🛑 Vencida' : '⏳ Pendiente'}
+        </div>
+        <div class="tarea-destacado">${tarea.destacado ? '⭐ Destacada' : ''}</div>
+      </div>
     `;
 
     if (!vencida && !tarea.realizado) {
       contenidoHTML += `
-        <button class="btn-realizar">Marcar como realizada</button>
-        <button class="btn-destacar">${tarea.destacado ? 'Quitar destacado' : 'Destacar'}</button>
-        <button class="btn-eliminar">Eliminar</button>
+        <div class="tarea-botones">
+          <button class="btn-realizar">Marcar como realizada</button>
+          <button class="btn-destacar">${tarea.destacado ? 'Quitar destacado' : 'Destacar'}</button>
+          <button class="btn-eliminar">Eliminar</button>
+        </div>
       `;
     } else {
-      contenidoHTML += `<button class="btn-eliminar">Eliminar</button>`;
+      contenidoHTML += `
+        <div class="tarea-botones">
+          <button class="btn-eliminar">Eliminar</button>
+        </div>
+      `;
     }
 
     contenidoHTML += `<hr />`;
@@ -215,14 +230,20 @@
       cargarDatos();
     }
 
-    async function eliminarTarea(id) {
-      await fetch('/tarea', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ correo, id })
-      });
-      cargarDatos();
-    }
+   async function eliminarTarea(id) {
+  const confirmar = confirm('¿Estás seguro de que quieres eliminar esta tarea?');
+
+  if (!confirmar) return;
+
+  await fetch('/tarea', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ correo, id })
+  });
+
+  cargarDatos();
+}
+
 
     formTarea.addEventListener('submit', async (e) => {
       e.preventDefault();
