@@ -7,7 +7,7 @@
 </head>
 <body>
   <header class="encabezado">
-    <h1><span class="pomo">POMO</span><span class="task">TASK</span></h1>
+    <h1><span class="pomo">Pomo</span><span class="task">Task</span></h1>
     <div id="bienvenida">Bienvenido</div>
     <button id="cerrarSesion">Salir</button>
   </header>
@@ -42,6 +42,7 @@
   <audio id="sonidoDescanso" src="Assets/descanso.wav" preload="auto"></audio>
 
   <script>
+    // --- Validación de sesión ---
     const correo = localStorage.getItem('correoUsuario');
     if (!correo) window.location.href = './index.html';
 
@@ -49,23 +50,20 @@
     const listaTareas = document.getElementById('listaTareas');
     const formTarea = document.getElementById('formTarea');
 
-    // Pomodoro
+    // --- Pomodoro ---
     const tiempo = document.getElementById('tiempo');
     const btnComenzar = document.getElementById('comenzar');
     const btnSaltar = document.getElementById('saltar');
     const fasePomodoro = document.getElementById('fasePomodoro');
-
     const sonidoPomodoro = document.getElementById('sonidoPomodoro');
     const sonidoDescanso = document.getElementById('sonidoDescanso');
 
-    // Ajustar volumen a 0.3 (30%)
     sonidoPomodoro.volume = 0.3;
     sonidoDescanso.volume = 0.3;
 
-    let minutos = 25;
-    let segundos = 0;
+    let minutos = 25, segundos = 0;
     let intervalo = null;
-    let estado = 'trabajo'; // trabajo, descansoBreve, descansoLargo
+    let estado = 'trabajo';
     let ciclosCompletados = 0;
     let pausado = true;
 
@@ -87,35 +85,24 @@
     }
 
     function reproducirSonido() {
-      if (estado === 'trabajo') {
-        sonidoPomodoro.currentTime = 0;
-        return sonidoPomodoro.play();
-      } else {
-        sonidoDescanso.currentTime = 0;
-        return sonidoDescanso.play();
-      }
+      const sonido = estado === 'trabajo' ? sonidoPomodoro : sonidoDescanso;
+      sonido.currentTime = 0;
+      sonido.play().catch(err => console.warn("Sonido bloqueado o falló:", err));
     }
 
     function cambiarEstado() {
       if (estado === 'trabajo') {
         ciclosCompletados++;
-        if (ciclosCompletados % 4 === 0) {
-          estado = 'descansoLargo';
-          minutos = 15;
-        } else {
-          estado = 'descansoBreve';
-          minutos = 5;
-        }
-        segundos = 0;
-        reproducirSonido();
+        estado = (ciclosCompletados % 4 === 0) ? 'descansoLargo' : 'descansoBreve';
+        minutos = (estado === 'descansoLargo') ? 15 : 5;
       } else {
         estado = 'trabajo';
         minutos = 25;
-        segundos = 0;
-        reproducirSonido();
       }
+      segundos = 0;
       actualizarFase();
       actualizarTiempo();
+      reproducirSonido();
     }
 
     function tick() {
@@ -135,80 +122,75 @@
     }
 
     btnComenzar.addEventListener('click', () => {
-      if (pausado) {
-        pausado = false;
-        btnComenzar.textContent = 'Pausar';
-        if (!intervalo) {
-          intervalo = setInterval(tick, 1000);
-        }
-        const playPromise = reproducirSonido();
-        if (playPromise !== undefined) {
-          playPromise.catch(err => console.warn("Sonido bloqueado o falló:", err));
-        }
-      } else {
-        pausado = true;
-        btnComenzar.textContent = 'Comenzar';
-      }
+      pausado = !pausado;
+      btnComenzar.textContent = pausado ? 'Comenzar' : 'Pausar';
+      if (!intervalo) intervalo = setInterval(tick, 1000);
+      if (!pausado) reproducirSonido();
     });
 
     btnSaltar.addEventListener('click', () => {
       cambiarEstado();
       pausado = false;
       btnComenzar.textContent = 'Pausar';
-
-      if (!intervalo) {
-        intervalo = setInterval(tick, 1000);
-      }
+      if (!intervalo) intervalo = setInterval(tick, 1000);
     });
 
     actualizarFase();
     actualizarTiempo();
 
-    // --- Código tareas igual que el que tienes ---
-    async function cargarDatos() {
-      const res = await fetch(`/usuario?correo=${correo}`);
-      const data = await res.json();
-      bienvenida.textContent = `Bienvenido ${data.nombre} ${data.apellido}`;
-      listaTareas.innerHTML = '';
-      data.tareas.forEach(tarea => {
-        const item = document.createElement('li');
-        item.setAttribute('draggable', 'true');
-        item.dataset.id = tarea.id;
+   async function cargarDatos() {
+  const res = await fetch(`/usuario?correo=${correo}`);
+  const data = await res.json();
+  bienvenida.textContent = `Bienvenido ${data.nombre} ${data.apellido}`;
+  listaTareas.innerHTML = '';
 
-        const hoy = new Date();
-        const fechaTarea = new Date(tarea.fecha);
-        const vencida = fechaTarea < hoy && !tarea.realizado;
+  // Obtenemos la fecha de hoy (sin horas/minutos/segundos)
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
 
-        let contenidoHTML = `
-          <strong style="color: ${vencida ? 'red' : 'inherit'}">${tarea.fecha}</strong> 
-          - <strong>${tarea.titulo}</strong>: ${tarea.descripcion}
-          <br />
-          Estado: ${tarea.realizado ? '✅ Realizada' : vencida ? '🛑 Tarea vencida' :'⏳ Pendiente'}
-          <br />
-          Destacada: ${tarea.destacado ? '⭐ Sí' : 'No'}<br />
-        `;
+  data.tareas.forEach(tarea => {
+    const item = document.createElement('li');
+    item.setAttribute('draggable', 'true');
+    item.dataset.id = tarea.id;
 
-        if (!vencida) {
-          contenidoHTML += `
-            <button class="btn-realizar">Marcar como realizada</button>
-            <button class="btn-destacar">${tarea.destacado ? 'Quitar destacado' : 'Destacar'}</button>
-            <button class="btn-eliminar">Eliminar</button>
-          `;
-        } else {
-          contenidoHTML += `<button class="btn-eliminar">Eliminar</button>`;
-        }
+    // Convertimos la fecha de la tarea a objeto Date
+    const fechaTarea = new Date(tarea.fecha);
+    fechaTarea.setHours(0, 0, 0, 0); // Normalizamos la fecha de la tarea
 
-        contenidoHTML += `<hr />`;
-        item.innerHTML = contenidoHTML;
-        listaTareas.appendChild(item);
+    // Verificamos si la tarea está vencida (fecha es anterior a hoy y no está realizada)
+    const vencida = fechaTarea < hoy && !tarea.realizado;
 
-        if (!vencida) {
-          item.querySelector('.btn-realizar').addEventListener('click', () => marcarRealizada(tarea.id));
-          item.querySelector('.btn-destacar').addEventListener('click', () => destacar(tarea.id, tarea.destacado));
-        }
-        item.querySelector('.btn-eliminar').addEventListener('click', () => eliminarTarea(tarea.id));
-      });
+    let contenidoHTML = `
+      <strong style="color: ${vencida ? 'red' : 'inherit'}">${tarea.fecha}</strong> 
+      - <strong>${tarea.titulo}</strong>: ${tarea.descripcion}
+      <br />
+      Estado: ${tarea.realizado ? '✅ Realizada' : vencida ? '🛑 Tarea vencida' : '⏳ Pendiente'}
+      <br />
+      Destacada: ${tarea.destacado ? '⭐ Sí' : 'No'}<br />
+    `;
+
+    if (!vencida && !tarea.realizado) {
+      contenidoHTML += `
+        <button class="btn-realizar">Marcar como realizada</button>
+        <button class="btn-destacar">${tarea.destacado ? 'Quitar destacado' : 'Destacar'}</button>
+        <button class="btn-eliminar">Eliminar</button>
+      `;
+    } else {
+      contenidoHTML += `<button class="btn-eliminar">Eliminar</button>`;
     }
+
+    contenidoHTML += `<hr />`;
+    item.innerHTML = contenidoHTML;
+    listaTareas.appendChild(item);
+
+    if (!vencida && !tarea.realizado) {
+      item.querySelector('.btn-realizar').addEventListener('click', () => marcarRealizada(tarea.id));
+      item.querySelector('.btn-destacar').addEventListener('click', () => destacar(tarea.id, tarea.destacado));
+    }
+    item.querySelector('.btn-eliminar').addEventListener('click', () => eliminarTarea(tarea.id));
+  });
+}
+
 
     async function marcarRealizada(id) {
       await fetch('/tarea/realizada', {
@@ -242,11 +224,13 @@
       const titulo = document.getElementById('titulo').value;
       const descripcion = document.getElementById('descripcion').value;
       const fecha = document.getElementById('fecha').value;
+
       await fetch('/tarea', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ correo, titulo, descripcion, fecha })
       });
+
       formTarea.reset();
       cargarDatos();
     });
@@ -257,6 +241,45 @@
     });
 
     cargarDatos();
+
+    // --- Drag & Drop ---
+    let draggedItem = null;
+
+    listaTareas.addEventListener('dragstart', (e) => {
+      if (e.target.tagName === 'LI') {
+        draggedItem = e.target;
+        draggedItem.classList.add('dragging');
+      }
+    });
+
+    listaTareas.addEventListener('dragend', (e) => {
+      if (e.target.tagName === 'LI') {
+        e.target.classList.remove('dragging');
+      }
+    });
+
+    listaTareas.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      const afterElement = getDragAfterElement(listaTareas, e.clientY);
+      if (afterElement == null) {
+        listaTareas.appendChild(draggedItem);
+      } else {
+        listaTareas.insertBefore(draggedItem, afterElement);
+      }
+    });
+
+    function getDragAfterElement(container, y) {
+      const draggableElements = [...container.querySelectorAll('li:not(.dragging)')];
+      return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
+        } else {
+          return closest;
+        }
+      }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
   </script>
 </body>
 </html>

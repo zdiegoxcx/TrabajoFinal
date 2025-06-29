@@ -1,243 +1,427 @@
-/* Fuente base */
+/* ----------- Estilo base ----------- */
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #f4effc;
-  color: #333;
+  font-family: 'Inter', sans-serif;
+  background-color: #f5f7fa;
+  color: #2d3748;
 }
 
-/* Encabezado */
+/* ----------- Encabezado superior (más destacado) ----------- */
 .encabezado {
-  background: linear-gradient(to right, #ff6b6b, #ffa56b);
+  background: linear-gradient(135deg, #6C4AFF 0%, #4D2CD9 100%);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  border-bottom: 5px solid #fff;
+  padding: 1.5rem 3rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .encabezado h1 {
   margin: 0;
-  font-size: 1.8rem;
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .pomo {
-  color: black;
+  color: #ffffff;
 }
 
 .task {
-  color: #f08;
-  font-weight: bold;
+  color: #FFD166;
+  font-weight: 800;
+}
+
+/* Mensaje de bienvenida y botón cerrar sesión */
+#bienvenida {
+  color: rgba(255,255,255,0.9);
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-right: 1.5rem;
 }
 
 #cerrarSesion {
-  background-color: #f0f0f0;
+  background-color: rgba(255,255,255,0.15);
+  color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  font-weight: bold;
-  border-radius: 20px;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 #cerrarSesion:hover {
-  background-color: #ddd;
+  background-color: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
 }
 
-/* Contenido principal */
+/* ----------- Contenido principal ----------- */
 .contenido {
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-start;
-  padding: 2rem;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 2.5rem;
+  padding: 2.5rem;
+  max-width: 1300px;
+  margin: auto;
 }
 
-/* Formulario */
+@media (max-width: 768px) {
+  .contenido {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+  }
+}
+
+/* ----------- Sección formulario ----------- */
 .formulario {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 15px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  flex: 1;
-  max-width: 500px;
-  margin-bottom: 2rem;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid #e2e8f0;
+  /* Añadido para contener el textarea */
+  overflow: hidden;
 }
 
 .formulario h2 {
   margin-top: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.formulario h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: #6C4AFF;
+  border-radius: 3px;
 }
 
 .formulario input,
-.formulario textarea,
-.formulario button {
-  display: block;
+.formulario textarea {
   width: 100%;
-  margin: 0.5rem 0;
-  padding: 0.6rem;
-  border-radius: 8px;
-  border: none;
-  background-color: #e8e4ea;
+  padding: 0.9rem;
+  margin: 0.75rem 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
+.formulario input:focus,
+.formulario textarea:focus {
+  outline: none;
+  border-color: #6C4AFF;
+  box-shadow: 0 0 0 3px rgba(108, 74, 255, 0.1);
+}
+
+.formulario textarea {
+  min-height: 120px;
+  resize: vertical;
+  max-width: 100%;
+  min-width: 100%;
+  /* Evita que el redimensionamiento afecte el layout */
+  will-change: transform; 
+  /* Contiene el redimensionamiento dentro del formulario */
+  max-height: 300px; /* Puedes ajustar este valor según necesites */
+}
 .formulario button {
-  background-color: #c48af9;
+  width: 100%;
+  padding: 1rem;
+  background-color: #6C4AFF;
   color: white;
-  font-weight: bold;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  margin-top: 1rem;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(108, 74, 255, 0.2);
 }
 
 .formulario button:hover {
-  background-color: #a06fd1;
+  background-color: #4D2CD9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 74, 255, 0.3);
 }
 
-/* Pomodoro */
+/* ----------- Sección Pomodoro ----------- */
 #pomodoro {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 15px;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid #e2e8f0;
   text-align: center;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 220px;
+  /* Asegura que mantenga su posición */
+  position: sticky;
+  top: 6rem;
+  /* Evita que se mueva con el redimensionamiento */
+  align-self: flex-start;
+}
+
+@media (max-width: 768px) {
+  #pomodoro {
+    position: static;
+    margin-top: 2rem;
+  }
 }
 
 #pomodoro h3 {
-  margin: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.4rem;
+  color: #2d3748;
 }
 
 #tiempo {
-  font-size: 2.5rem;
+  font-size: 3.2rem;
+  font-weight: 700;
   margin: 1rem 0;
-  background-color: #e0dfe4;
+  background-color: #f8fafc;
   border-radius: 10px;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
   display: inline-block;
-  border: 2px solid #99a;
+  color: #2d3748;
+  font-family: 'Roboto Mono', monospace;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+#fasePomodoro {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #4a5568;
+}
+
+/* Botones Pomodoro */
+#comenzar,
+#saltar {
+  display: block;
+  width: 100%;
+  padding: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 #comenzar {
-  background-color: #ff623d;
-  border: none;
+  background-color: #FF5E4D;
   color: white;
-  padding: 0.6rem 1rem;
-  border-radius: 10px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
+  box-shadow: 0 2px 6px rgba(255, 94, 77, 0.2);
 }
 
 #comenzar:hover {
-  background-color: #d64d2b;
+  background-color: #E0412E;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 94, 77, 0.3);
 }
 
-/* Sección de tareas */
+#saltar {
+  background-color: #3D91FF;
+  color: white;
+  box-shadow: 0 2px 6px rgba(61, 145, 255, 0.2);
+}
+
+#saltar:hover {
+  background-color: #2A7AE9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(61, 145, 255, 0.3);
+}
+
+/* ----------- Sección lista de tareas ----------- */
 .tareas {
-  background-color: #ffffff;
-  margin: 0 auto;
-  max-width: 90%;
-  border-radius: 15px;
-  padding: 2rem;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  max-width: 1100px;
+  margin: 2rem auto 4rem;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 2.5rem;
+  border: 1px solid #e2e8f0;
 }
 
 .tareas h2 {
-  text-align: center;
   font-size: 1.6rem;
-  margin-bottom: 1rem;
-  border-bottom: 3px solid black;
-  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+  color: #2d3748;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
 }
 
+/* Lista de tareas mejorada */
 #listaTareas {
   list-style: none;
   padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1.25rem;
 }
 
 #listaTareas li {
-  background-color: #e6e1e9;
-  margin-bottom: 1rem;
-  padding: 1rem;
+  background-color: #fff;
+  padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  position: relative;
+  overflow: hidden;
 }
 
-#listaTareas li strong {
-  font-weight: bold;
+#listaTareas li:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
 }
 
-#listaTareas button {
-  margin-top: 0.5rem;
-  margin-right: 0.5rem;
-  padding: 0.4rem 0.7rem;
+#listaTareas li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: #6C4AFF;
+}
+
+#listaTareas strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+#listaTareas hr {
   border: none;
-  border-radius: 6px;
-  font-weight: bold;
+  height: 1px;
+  background-color: #e2e8f0;
+  margin: 1rem 0;
+}
+
+/* Botones de tareas mejorados */
+#listaTareas button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  margin: 0.4rem 0.4rem 0 0;
   cursor: pointer;
-  background-color: #ccc;
-  transition: background-color 0.2s;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
 }
 
 #listaTareas button:hover {
-  background-color: #bbb;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-#listaTareas button:nth-of-type(1) {
-  background-color: #4caf50;
+#listaTareas button.btn-realizar {
+  background-color: #4CAF50;
   color: white;
 }
 
-#listaTareas button:nth-of-type(1):hover {
-  background-color: #388e3c;
+#listaTareas button.btn-realizar:hover {
+  background-color: #3d8b40;
 }
 
-#listaTareas button:nth-of-type(2) {
-  background-color: #ffc107;
-  color: black;
+#listaTareas button.btn-destacar {
+  background-color: #FFB74D;
+  color: #2d3748;
 }
 
-#listaTareas button:nth-of-type(2):hover {
-  background-color: #e0a800;
+#listaTareas button.btn-destacar:hover {
+  background-color: #FFA726;
 }
 
-#listaTareas button:nth-of-type(3) {
-  background-color: #f44336;
+#listaTareas button.btn-eliminar {
+  background-color: #FF5252;
   color: white;
 }
 
-#listaTareas button:nth-of-type(3):hover {
-  background-color: #d32f2f;
+#listaTareas button.btn-eliminar:hover {
+  background-color: #FF3D3D;
 }
 
+/* ----------- Drag & Drop estilos mejorados ----------- */
 #listaTareas li[draggable="true"] {
   cursor: grab;
 }
 
-#listaTareas li[draggable="true"].dragging {
+#listaTareas li.dragging {
   cursor: grabbing;
-  opacity: 0.6;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  transform: scale(1.03);
-  transition: transform 0.2s ease;
+  opacity: 0.8;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  transform: scale(1.02) rotate(1deg);
+  background-color: #f8fafc;
 }
 
 #listaTareas li.drag-over {
-  border-top: 3px solid #ff623d;
+  border-top: 3px solid #6C4AFF;
+  margin-top: 3px;
 }
 
-#saltar {
-  background-color: #3c91e6;
-  border: none;
-  color: white;
-  padding: 0.6rem 1rem;
-  border-radius: 10px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  margin-top: 0.5rem;
+/* ----------- Responsive ----------- */
+@media (max-width: 768px) {
+  .encabezado {
+    padding: 1.2rem;
+  }
+  
+  .encabezado h1 {
+    font-size: 1.8rem;
+  }
+  
+  #bienvenida {
+    font-size: 1rem;
+    margin-right: 1rem;
+  }
+  
+  #cerrarSesion {
+    padding: 0.5rem 1rem;
+  }
+  
+  .contenido {
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+  
+  .formulario,
+  #pomodoro,
+  .tareas {
+    padding: 1.5rem;
+  }
+  
+  #tiempo {
+    font-size: 2.8rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  #listaTareas li {
+    padding: 1.25rem;
+  }
 }
 
-#saltar:hover {
-  background-color: #2a6fb0;
-}
 
