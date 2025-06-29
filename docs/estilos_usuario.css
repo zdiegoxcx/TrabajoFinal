@@ -8,7 +8,7 @@ body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
   background-color: #f0f2f5;
-  color: #333;
+  color: #000000;
   display: flex;
   flex-direction: column; /* ⬅️ Esta línea es la clave */
   align-items: center;
@@ -36,7 +36,7 @@ body {
 .container {
   background-color: white;
   border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   display: flex;
   overflow: hidden;
   max-width: 1000px;
@@ -54,7 +54,7 @@ body {
 /* Títulos y etiquetas del formulario */
 .form-section h1 {
   margin-bottom: 20px;
-  color: #2c3e50;
+  color: #000000;
 }
 .form-section label {
   display: block;
@@ -83,9 +83,11 @@ body {
   font-size: 16px;
   cursor: pointer;
   transition: background 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 .form-section button:hover {
   background-color: #2980b9;
+  
 }
 
 /* Mensaje de estado (error o éxito) */
@@ -107,22 +109,37 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 300px;
-  padding: 20px;
+  padding: 30px 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.video-contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 640px; /* límite para pantallas grandes */
+}
+
+.titulo-video {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #000000;
+  text-align: center;
+}
+
+/* Video responsivo en relación 16:9 */
+.video-responsive {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0,0,0,0.2);
 }
 
-/* Estilo responsivo para el iframe del video */
-.video-responsive {
-  width: 100%;
-  height: 0;
-  padding-bottom: 56.25%; /* Relación 16:9 */
-  position: relative;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 0 15px rgba(0,0,0,0.2);
-}
 .video-responsive iframe {
   position: absolute;
   top: 0;

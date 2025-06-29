@@ -8,11 +8,12 @@
 </head>
 <body>
 
-<h1 class="titulo-principal">
-  <span class="negro">Pomo</span><span class="rojo">Task</span>
-</h1>
+  <h1 class="titulo-principal">
+    <span class="negro">Pomo</span><span class="rojo">Task</span>
+  </h1>
 
   <div class="container">
+
     <!-- Sección del formulario de login -->
     <div class="form-section">
       <h1>Iniciar sesión</h1>
@@ -35,22 +36,28 @@
       <p>¿No tienes cuenta? <a href="./register.html">Registrarse</a></p>
 
       <!-- Mensaje adicional para recuperar contraseña -->
-      <p class="recuperar-pass">Si perdiste la contraseña llama a: <strong>+56 9 3720 2043</strong></p>
+      <p class="recuperar-pass">
+        Si perdiste la contraseña llama a: <strong>+56 9 3720 2043</strong>
+      </p>
     </div>
 
     <!-- Sección del video embebido de YouTube -->
     <div class="video-section">
-      <iframe 
-      width="560" 
-      height="315" 
-      src="https://www.youtube.com/embed/UmFFTkjs-O0" 
-      title="The Cure - Pictures Of You" 
-      frameborder="0" 
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-      referrerpolicy="strict-origin-when-cross-origin" 
-      allowfullscreen>
-    </iframe>
+      <div class="video-contenedor">
+        <h2 class="titulo-video">¿Qué es PomoTask?</h2>
+        <div class="video-responsive">
+          <iframe 
+            src="https://www.youtube.com/embed/UmFFTkjs-O0"
+            title="The Cure - Pictures Of You"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
     </div>
+
   </div>
 
   <script>
@@ -87,5 +94,6 @@
       }
     });
   </script>
+
 </body>
 </html>
