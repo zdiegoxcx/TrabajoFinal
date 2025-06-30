@@ -47,7 +47,7 @@ docker-compose up -d
 ```
 3. **Iniciar el servidor Express:**
 ```bash
-docker-compose up -d
+npm start
 ```
 3. **Abre tu navegador en:**
 ```bash
