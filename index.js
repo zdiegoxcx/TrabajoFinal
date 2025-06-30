@@ -11,7 +11,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/usuarios', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-//aqui deberia ir un console.log, pero el varela dijo que eran mala practica
+//aqui deberia ir un console.log, pero el profe varela dijo que eran mala practica
 
 // Middleware (para el jason)
 app.use(express.static(path.join(__dirname, 'docs')));

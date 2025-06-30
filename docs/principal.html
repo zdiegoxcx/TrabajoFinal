@@ -162,9 +162,9 @@
 
     // Convertimos la fecha de la tarea a objeto Date
     const fechaTarea = new Date(tarea.fecha);
-    fechaTarea.setHours(0, 0, 0, 0); // Normalizamos la fecha de la tarea
+    fechaTarea.setHours(0, 0, 0, 0); 
 
-    // Verificamos si la tarea está vencida (fecha es anterior a hoy y no está realizada)
+    // Verificamos si la tarea está vencida
     const vencida = fechaTarea < hoy && !tarea.realizado;
 
     let contenidoHTML = `

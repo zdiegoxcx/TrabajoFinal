@@ -1,6 +1,6 @@
 /* ----------- Estilo base ----------- */
 body {
-  position: relative; /* Importante para posicionar .fondo-wave */
+  position: relative; 
   margin: 0;
   font-family: 'Inter', sans-serif;
   background-color: #efe6f9;
@@ -21,7 +21,7 @@ body {
   pointer-events: none;
 }
 
-/* ----------- Encabezado superior (más destacado) ----------- */
+/* ----------- Encabezado superior ----------- */
 .encabezado {
   background: linear-gradient(135deg, #fe6b6b 0%, #fe6b6b 100%);
   display: flex;
@@ -51,7 +51,6 @@ body {
   font-weight: 800;
 }
 
-/* Bloque blanco dentro del encabezado */
 .bloque-encabezado {
   background-color: rgb(255, 255, 255);
   border-radius: 16px;
@@ -72,7 +71,6 @@ body {
   gap: 1rem;
 }
 
-/* Ajustes al h1 cuando está dentro del bloque blanco */
 .bloque-encabezado h1 {
   font-size: 2rem;
   margin: 0;
@@ -96,13 +94,13 @@ body {
   transition: all 0.3s ease;
   font-size: 0.95rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  border: 2px solid transparent; /* Añade esto */
+  border: 2px solid transparent; 
 }
 
 #cerrarSesion:hover {
   background-color: rgba(77, 73, 73, 0.15);
   transform: translateY(-1px);
-  border-color: #000000; /* Esto ahora funcionará */
+  border-color: #000000; 
 }
 /* ----------- Contenido principal ----------- */
 .contenido {
@@ -179,10 +177,8 @@ body {
   resize: vertical;
   max-width: 100%;
   min-width: 100%;
-  /* Evita que el redimensionamiento afecte el layout */
   will-change: transform; 
-  /* Contiene el redimensionamiento dentro del formulario */
-  max-height: 300px; /* Puedes ajustar este valor según necesites */
+  max-height: 300px; 
 }
 
 .formulario button {
@@ -191,7 +187,7 @@ body {
   background-color: rgba(77, 73, 73, 0.15);
   color: rgb(0, 0, 0);
   font-weight: 600;
-  border: 2px solid transparent; /* Añade esto si quieres el mismo efecto */
+  border: 2px solid transparent; 
   border-radius: 10px;
   margin-top: 1rem;
   cursor: pointer;
@@ -213,10 +209,8 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   border: 1px solid #e2e8f0;
   text-align: center;
-  /* Asegura que mantenga su posición */
   position: sticky;
   top: 6rem;
-  /* Evita que se mueva con el redimensionamiento */
   align-self: flex-start;
 }
 
@@ -266,7 +260,7 @@ body {
   transition: all 0.3s ease;
   font-size: 1rem;
   margin-bottom: 0.75rem;
-  border: 2px solid transparent; /* Añade esto */
+  border: 2px solid transparent;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
@@ -312,7 +306,7 @@ body {
   border-bottom: 1px solid #e2e8f0;
 }
 
-/* Lista de tareas mejorada */
+/* Lista de tareas */
 #listaTareas {
   list-style: none;
   padding: 0;
@@ -353,7 +347,6 @@ body {
   background: #fe6b6b;
 }
 
-/* Fecha a la derecha */
 #listaTareas li strong:first-of-type {
   float: right;
   font-size: 0.95rem;
@@ -363,7 +356,6 @@ body {
   white-space: nowrap;
 }
 
-/* Título más grande a la izquierda */
 #listaTareas li strong:last-of-type {
   font-size: 1.4rem;
   font-weight: 700;
@@ -377,13 +369,12 @@ body {
   margin-right: 0.3rem;
 }
 
-/* Evitar que el guion y descripción queden pegados a la fecha */
 #listaTareas li br {
   margin-bottom: 0.5rem;
   display: block;
 }
 
-/* Botones de tareas mejorados */
+/* Botones de tareas */
 #listaTareas button {
   padding: 0.6rem 1.2rem;
   border: none;
@@ -398,7 +389,7 @@ body {
   justify-content: center;
   gap: 0.4rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  border: 2px solid transparent; /* Añade esto */
+  border: 2px solid transparent;
   
 }
 
@@ -496,7 +487,7 @@ body {
 }
 /* ----------- Footer ----------- */
 .footer {
-  background-color: #2b2b2b; /* Gris oscuro */
+  background-color: #2b2b2b; 
   color: #ffffff;
   text-align: center;
   padding: 0.4rem 1rem;
